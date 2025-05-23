@@ -1,42 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>Assets\Icons\fox.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Assets\Icons\fox.ico" />
-      <Resource Include="Assets\Icons\fox.ico">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
-      <None Remove="Assets\Icons\fox.png" />
-      <Resource Include="Assets\Icons\fox.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
-      <None Remove="Assets\Images\fox.ico" />
-      <Resource Include="Assets\Images\fox.ico">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
-      <None Remove="Assets\Images\fox.png" />
-      <Resource Include="Assets\Images\fox.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
-      <None Remove="Assets\Images\fox-logo.png" />
-      <Resource Include="Assets\Images\fox-logo.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
-      <None Remove="Assets\Lotties\fox-tape.json" />
-      <Resource Include="Assets\Lotties\fox-tape.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
-      <None Remove="Assets\Lotties\fox-zen.json" />
-      <Resource Include="Assets\Lotties\fox-zen.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
+        <!-- Packages de base -->
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+        <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+        <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+
+        <!-- Material Design UNIQUEMENT (packages compatibles .NET 8) -->
+        <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+        <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
+        <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.11.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Resource Include="Assets\**\*" />
+    </ItemGroup>
 </Project>

@@ -1,0 +1,532 @@
+﻿<Window x:Class="Konan.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        Title="Konan - Paramètres"
+        Height="750" Width="550"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip">
+
+    <Window.Resources>
+        <!-- Animations pour les paramètres -->
+        <Storyboard x:Key="SettingsFadeIn">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase EasingMode="EaseOut" Amplitude="0.3"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <!-- Style pour les cartes de paramètres - NOIR/ROUGE -->
+        <Style x:Key="SettingsCard" TargetType="Border">
+            <Setter Property="Background" Value="#FF111111"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="BorderBrush" Value="#FF2a2a2a"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF1a1a1a"/>
+                    <Setter Property="BorderBrush" Value="#FFdc2626"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Toggle Switch moderne NOIR/ROUGE -->
+        <Style x:Key="ModernToggle" TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid>
+                            <Border x:Name="SwitchTrack" Width="50" Height="24" 
+                                   Background="#FF2a2a2a" CornerRadius="12"
+                                   BorderBrush="#FF404040" BorderThickness="1"/>
+                            <Border x:Name="SwitchThumb" Width="18" Height="18"
+                                   Background="White" CornerRadius="9"
+                                   HorizontalAlignment="Left" VerticalAlignment="Center"
+                                   Margin="3,0,0,0">
+                                <Border.RenderTransform>
+                                    <TranslateTransform x:Name="ThumbTransform"/>
+                                </Border.RenderTransform>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="SwitchTrack" Property="Background" Value="#FFdc2626"/>
+                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#FFdc2626"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ThumbTransform"
+                                                           Storyboard.TargetProperty="X"
+                                                           To="26" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <BackEase EasingMode="EaseOut" Amplitude="0.3"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ThumbTransform"
+                                                           Storyboard.TargetProperty="X"
+                                                           To="0" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <BackEase EasingMode="EaseOut" Amplitude="0.3"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style pour TextBox de paramètres NOIR/ROUGE -->
+        <Style x:Key="SettingsTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#FF1a1a1a"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FF2a2a2a"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="CaretBrush" Value="#FFdc2626"/>
+            <Setter Property="SelectionBrush" Value="#40dc2626"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="BorderElement" 
+                               Background="{TemplateBinding Background}"
+                               BorderBrush="{TemplateBinding BorderBrush}"
+                               BorderThickness="{TemplateBinding BorderThickness}"
+                               CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                        Margin="{TemplateBinding Padding}"
+                                        VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="BorderElement" Property="BorderBrush" Value="#FFdc2626"/>
+                                <Setter TargetName="BorderElement" Property="Background" Value="#FF2a2a2a"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Bouton d'action NOIR/ROUGE -->
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#FFdc2626"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="BorderElement" 
+                               Background="{TemplateBinding Background}"
+                               CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BorderElement" Property="Background" Value="#FFef4444"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="BorderElement" Property="Background" Value="#FFb91c1c"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Bouton moderne cohérent -->
+        <Style x:Key="ModernIconButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="MinWidth" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" 
+                               Background="{TemplateBinding Background}"
+                               CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#20dc2626"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#40dc2626"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ScrollBar ultra-fine cohérente -->
+        <Style x:Key="ModernScrollBar" TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid>
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="#30dc2626" CornerRadius="2" Opacity="0.6"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Opacity" Value="1"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Window.RenderTransform>
+        <ScaleTransform ScaleX="1" ScaleY="1"/>
+    </Window.RenderTransform>
+
+    <!-- Container principal NOIR cohérent -->
+    <Border CornerRadius="16" Margin="12" Background="#FF0a0a0a" BorderBrush="#FF1a1a1a" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.8" BlurRadius="25" ShadowDepth="0"/>
+        </Border.Effect>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header élégant NOIR/ROUGE -->
+            <Grid Grid.Row="0" MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo animé ROUGE -->
+                <Border Grid.Column="0" Margin="20,20,16,20" 
+                       Width="36" Height="36" CornerRadius="18">
+                    <Border.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#FFdc2626" Offset="0"/>
+                            <GradientStop Color="#FFb91c1c" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Border.Background>
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FFdc2626" Opacity="0.6" BlurRadius="10" ShadowDepth="0"/>
+                    </Border.Effect>
+                    <iconPacks:PackIconMaterial Kind="AccountSettings" 
+                                              Width="20" Height="20"
+                                              Foreground="White"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                </Border>
+
+                <!-- Titre cohérent -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="5,20">
+                    <TextBlock Text="Paramètres" FontSize="22" FontWeight="Light" 
+                              Foreground="White" Margin="0,0,0,2">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" Opacity="0.5" BlurRadius="1" ShadowDepth="1"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock Text="Configuration de Konan" FontSize="11" 
+                              Foreground="#80FFFFFF"/>
+                </StackPanel>
+
+                <!-- Bouton Close -->
+                <Button Grid.Column="2" x:Name="CloseButton" Click="CloseButton_Click"
+                       Style="{StaticResource ModernIconButton}" Margin="5,20,20,20">
+                    <iconPacks:PackIconMaterial Kind="Close" Width="16" Height="16" Foreground="#FFdc2626"/>
+                </Button>
+            </Grid>
+
+            <!-- Content avec scroll ultra-fine -->
+            <ScrollViewer Grid.Row="1" Margin="20,0" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar" BasedOn="{StaticResource ModernScrollBar}"/>
+                </ScrollViewer.Resources>
+
+                <StackPanel>
+                    <!-- Général -->
+                    <Border Style="{StaticResource SettingsCard}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                <iconPacks:PackIconMaterial Kind="Cog" Width="20" Height="20" 
+                                                          Foreground="#FFdc2626" Margin="0,0,12,0"/>
+                                <TextBlock Text="Général" FontSize="16" FontWeight="Medium" 
+                                          Foreground="White" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Démarrage automatique -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Démarrage avec Windows" FontSize="14" FontWeight="Medium" Foreground="White"/>
+                                    <TextBlock Text="Lance Konan automatiquement au démarrage du système" 
+                                              FontSize="12" Foreground="#80FFFFFF" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" x:Name="StartupToggle" 
+                                         Style="{StaticResource ModernToggle}" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- Raccourci global -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="160"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Raccourci global" FontSize="14" FontWeight="Medium" Foreground="White"/>
+                                    <TextBlock Text="Combinaison de touches pour ouvrir Konan rapidement" 
+                                              FontSize="12" Foreground="#80FFFFFF" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <TextBox Grid.Column="1" x:Name="HotkeyTextBox" 
+                                        Style="{StaticResource SettingsTextBox}"
+                                        Text="Ctrl+Shift+V" VerticalAlignment="Center"
+                                        IsReadOnly="True"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Capture -->
+                    <Border Style="{StaticResource SettingsCard}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                <iconPacks:PackIconMaterial Kind="ContentPaste" Width="20" Height="20" 
+                                                          Foreground="#FFdc2626" Margin="0,0,12,0"/>
+                                <TextBlock Text="Capture" FontSize="16" FontWeight="Medium" 
+                                          Foreground="White" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Capture automatique -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Capture automatique" FontSize="14" FontWeight="Medium" Foreground="White"/>
+                                    <TextBlock Text="Enregistre automatiquement tout ce que vous copiez" 
+                                              FontSize="12" Foreground="#80FFFFFF" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" x:Name="AutoCaptureToggle" 
+                                         Style="{StaticResource ModernToggle}" VerticalAlignment="Center" IsChecked="True"/>
+                            </Grid>
+
+                            <!-- Limite historique -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="100"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Limite de l'historique" FontSize="14" FontWeight="Medium" Foreground="White"/>
+                                    <TextBlock Text="Nombre maximum d'éléments à conserver" 
+                                              FontSize="12" Foreground="#80FFFFFF" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <TextBox Grid.Column="1" x:Name="MaxItemsTextBox" 
+                                        Style="{StaticResource SettingsTextBox}"
+                                        Text="1000" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- Taille max fichiers -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="100"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Taille max. fichiers (MB)" FontSize="14" FontWeight="Medium" Foreground="White"/>
+                                    <TextBlock Text="Taille maximum des fichiers à capturer" 
+                                              FontSize="12" Foreground="#80FFFFFF" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <TextBox Grid.Column="1" x:Name="MaxFileSizeTextBox" 
+                                        Style="{StaticResource SettingsTextBox}"
+                                        Text="5" VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Interface -->
+                    <Border Style="{StaticResource SettingsCard}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                <iconPacks:PackIconMaterial Kind="Palette" Width="20" Height="20" 
+                                                          Foreground="#FFdc2626" Margin="0,0,12,0"/>
+                                <TextBlock Text="Interface" FontSize="16" FontWeight="Medium" 
+                                          Foreground="White" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Animations -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Animations fluides" FontSize="14" FontWeight="Medium" Foreground="White"/>
+                                    <TextBlock Text="Active les transitions et animations élégantes" 
+                                              FontSize="12" Foreground="#80FFFFFF" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" x:Name="AnimationsToggle" 
+                                         Style="{StaticResource ModernToggle}" VerticalAlignment="Center" IsChecked="True"/>
+                            </Grid>
+
+                            <!-- Aperçu images -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Aperçu des images" FontSize="14" FontWeight="Medium" Foreground="White"/>
+                                    <TextBlock Text="Affiche des miniatures pour les images copiées" 
+                                              FontSize="12" Foreground="#80FFFFFF" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" x:Name="ImagePreviewToggle" 
+                                         Style="{StaticResource ModernToggle}" VerticalAlignment="Center" IsChecked="True"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Nettoyage -->
+                    <Border Style="{StaticResource SettingsCard}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                <iconPacks:PackIconMaterial Kind="Broom" Width="20" Height="20" 
+                                                          Foreground="#FFdc2626" Margin="0,0,12,0"/>
+                                <TextBlock Text="Nettoyage" FontSize="16" FontWeight="Medium" 
+                                          Foreground="White" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Nettoyage auto -->
+                            <Grid Margin="0,0,0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="100"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Nettoyage automatique (jours)" FontSize="14" FontWeight="Medium" Foreground="White"/>
+                                    <TextBlock Text="Supprime automatiquement les éléments anciens (0 = désactivé)" 
+                                              FontSize="12" Foreground="#80FFFFFF" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <TextBox Grid.Column="1" x:Name="AutoCleanupTextBox" 
+                                        Style="{StaticResource SettingsTextBox}"
+                                        Text="30" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- Actions -->
+                            <!-- Actions -->
+                            <!-- Actions AVEC HAUTEUR FORCÉE -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" x:Name="CleanNowButton" Click="CleanNowButton_Click"
+                                        Style="{StaticResource ActionButton}" 
+                                        Height="48" 
+                                        Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconMaterial Kind="Broom" Width="16" Height="16" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Nettoyer maintenant" FontSize="13" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Grid.Column="1" x:Name="ClearAllButton" Click="ClearAllButton_Click"
+                                        Style="{StaticResource ActionButton}" 
+                                        Height="48"
+                                        Margin="8,0,0,0"
+                                        Background="#FFb91c1c">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconMaterial Kind="DeleteEmpty" Width="16" Height="16" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Vider tout" FontSize="13" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Footer moderne NOIR -->
+            <Border Grid.Row="2" Background="#FF111111" Padding="20,12" CornerRadius="0,0,16,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="🦊 Konan v1.0.0" FontWeight="Medium"
+                                  Foreground="White" FontSize="12"/>
+                        <TextBlock Text="Fait avec ❤️ par TheTigerFox"
+                                  Foreground="#60FFFFFF" FontSize="10"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" x:Name="ResetButton" Click="ResetButton_Click"
+                           Style="{StaticResource ModernIconButton}" Margin="0,0,8,0"
+                           Width="110" Height="36">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="Restore" Width="14" Height="14" 
+                                                      Foreground="#80FFFFFF" Margin="0,0,6,0"/>
+                            <TextBlock Text="Réinitialiser" FontSize="11" Foreground="#80FFFFFF"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Grid.Column="2" x:Name="SaveButton" Click="SaveButton_Click"
+                           Style="{StaticResource ModernIconButton}" Width="110" Height="36">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="Check" Width="14" Height="14" 
+                                                      Foreground="#FFdc2626" Margin="0,0,6,0"/>
+                            <TextBlock Text="Fermer" FontSize="11" Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>
