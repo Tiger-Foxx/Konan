@@ -65,7 +65,7 @@
 
             <!-- Logo -->
             <Image Grid.Row="1" x:Name="LogoImage" 
-                   Source="Assets/Images/fox.png" 
+                   Source="Assets/Images/fox-logo.png" 
                    Width="120" Height="120"
                    RenderTransformOrigin="0.5,0.5">
                 <Image.RenderTransform>

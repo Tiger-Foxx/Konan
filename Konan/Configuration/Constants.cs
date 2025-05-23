@@ -39,6 +39,6 @@ public static class Constants
     };
     
     // Messages
-    public const string TRAY_TOOLTIP = "Konan - Gestionnaire de presse-papiers intelligent";
-    public const string APP_TITLE = "🦊 Konan - Le Renard du Presse-Papiers";
+    public const string TRAY_TOOLTIP = "Konan - Gestionnaire de presse-papiers illimité - Par Fox";
+    public const string APP_TITLE = "Konan - Le Renard du Presse-Papiers";
 }

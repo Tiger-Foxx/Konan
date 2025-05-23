@@ -1,11 +1,76 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <!-- Configuration de base -->
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
+        <LangVersion>12</LangVersion>
+
+        <!-- Informations du produit (ULTRA IMPORTANT) -->
+        <AssemblyTitle>Konan - Gestionnaire de Presse-Papiers Intelligent</AssemblyTitle>
+        <AssemblyDescription>Gestionnaire de presse-papiers moderne inspiré par Konan de l'Akatsuki. Interface élégante noir/rouge avec fonctionnalités avancées.</AssemblyDescription>
+        <AssemblyCompany>Fox Development</AssemblyCompany>
+        <AssemblyProduct>Konan</AssemblyProduct>
+        <AssemblyCopyright>Copyright © 2025 Fox (theTigerFox). All rights reserved.</AssemblyCopyright>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <FileVersion>1.0.0.0</FileVersion>
+        <ProductVersion>1.0.0</ProductVersion>
+
+        <!-- Icône et branding -->
         <ApplicationIcon>Assets\Icons\fox.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+
+        <!-- Optimisations de performance -->
+        <TieredCompilation>true</TieredCompilation>
+        <TieredCompilationQuickJit>true</TieredCompilationQuickJit>
+        <ReadyToRun>true</ReadyToRun>
+        <PublishReadyToRun>true</PublishReadyToRun>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+
+        <!-- Sécurité et qualité -->
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <WarningsNotAsErrors />
+        <Deterministic>true</Deterministic>
+        <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
+
+        <!-- Métadonnées NuGet (pour publication future) -->
+        <PackageId>Konan.ClipboardManager</PackageId>
+        <Authors>Fox (theTigerFox)</Authors>
+        <PackageDescription>Gestionnaire de presse-papiers intelligent et moderne pour Windows. Interface élégante, recherche avancée, favoris, et bien plus.</PackageDescription>
+        <PackageTags>clipboard;manager;productivity;wpf;windows;modern;material-design</PackageTags>
+        <PackageProjectUrl>https://github.com/Tiger-foxx/Konan</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Tiger-Foxx/Konan</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+
+        <!-- Génération de documentation -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+    <!-- Configuration Release optimisée -->
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <Optimize>true</Optimize>
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <DefineConstants>RELEASE</DefineConstants>
+        <TrimMode>partial</TrimMode>
+        <PublishTrimmed>false</PublishTrimmed>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    </PropertyGroup>
+
+    <!-- Configuration Debug -->
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <Optimize>false</Optimize>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,6 +91,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <!-- Ressources -->
         <Resource Include="Assets\**\*" />
+        <None Include="logo.png" Pack="true" PackagePath="\" />
+        <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="LICENSE" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <!-- Suppression des dépendances inutiles pour réduire la taille -->
+    <ItemGroup>
+        <TrimmerRootAssembly Include="Konan" />
     </ItemGroup>
 </Project>

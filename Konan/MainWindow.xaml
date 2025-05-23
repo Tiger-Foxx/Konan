@@ -204,7 +204,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- VOTRE Logo Fox -->
-                <Image Grid.Column="0" Source="Assets/Images/fox.png" 
+                <Image Grid.Column="0" Source="Assets/Images/fox-logo.png" 
                        Width="36" Height="36" 
                        Margin="20,15,15,15" VerticalAlignment="Center">
                     <Image.Effect>
