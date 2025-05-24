@@ -102,4 +102,5 @@
     <ItemGroup>
         <TrimmerRootAssembly Include="Konan" />
     </ItemGroup>
+    
 </Project>

@@ -1,0 +1,41 @@
+﻿BIENVENUE DANS L'INSTALLATION DE Konan
+
+Merci d'avoir choisi Konan, votre solution avancée de presse papier !
+
+✨ CE QUE VOUS ALLEZ INSTALLER
+
+**Konan** est un gestionnaire de presse-papiers nouvelle génération pour Windows, développé en WPF avec .NET 8. Inspiré par Konan de l'Akatsuki, maîtresse du papier, cette application révolutionne votre façon de gérer et d'utiliser votre presse-papiers.
+
+🔍 FONCTIONNALITÉS PRINCIPALES
+
+#### 📝 **Gestion Intelligente**
+- ✅ **Capture automatique** de tous vos contenus copiés
+- ✅ **Historique persistant** conservé entre les sessions
+- ✅ **Types multiples** : Texte, Rich Text, Images, Fichiers
+- ✅ **Recherche en temps réel** dans tout l'historique
+- ✅ **Système de favoris** pour vos contenus importants
+
+#### ⚡ **Performance et Productivité**
+- ✅ **Raccourcis clavier** : `Ctrl+Shift+V` (configurable)
+- ✅ **Sélection rapide** : Touches 1-9 pour accès instantané
+- ✅ **Collage automatique** : Konan colle directement après sélection
+- ✅ **Prévisualisation** riche avec métadonnées complètes
+- ✅ **Système de notifications** Windows 10/11
+
+#### 🎨 **Interface Moderne**
+- ✅ **Design noir/rouge** épuré et professionnel
+- ✅ **Animations fluides** avec Material Design
+- ✅ **Fenêtre transparente** avec effets glassmorphiques
+- ✅ **Scrollbar ultra-fine** discrète
+- ✅ **Responsive** et adaptatif
+
+⚙️ CONFIGURATION REQUISE
+
+• Système d'exploitation : Windows 10/11 (64 bits)
+• Espace disque : 50 Mo d'espace libre
+
+🔒 CONFIDENTIALITÉ
+
+Konan n'accède à aucune donnée personnelle et ne nécessite pas de connexion Internet pour fonctionner.
+
+Cliquez sur "Suivant" pour continuer l'installation.

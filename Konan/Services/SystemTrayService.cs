@@ -1,4 +1,6 @@
 using System;
+using System.Drawing;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -26,10 +28,15 @@ public class SystemTrayService : IDisposable
     /// <summary>
     /// Initialise l'icône dans la barre des tâches
     /// </summary>
+    /// <summary>
+    /// Initialise l'icône dans la barre des tâches
+    /// </summary>
     public void Initialize()
     {
         try
         {
+            Console.WriteLine("🦊 Initialisation du system tray...");
+        
             _taskbarIcon = new TaskbarIcon
             {
                 Icon = GetApplicationIcon(),
@@ -37,17 +44,30 @@ public class SystemTrayService : IDisposable
                 Visibility = Visibility.Visible
             };
 
+            // Vérifier que l'icône a été chargée
+            if (_taskbarIcon.Icon == null)
+            {
+                Console.WriteLine("⚠️ Aucune icône chargée !");
+            }
+            else
+            {
+                Console.WriteLine("✅ Icône chargée avec succès");
+            }
+
             // Menu contextuel
             _taskbarIcon.ContextMenu = CreateContextMenu();
 
             // Double-clic pour ouvrir
             _taskbarIcon.TrayMouseDoubleClick += (s, e) => ShowMainWindow?.Invoke(this, EventArgs.Empty);
 
-            Console.WriteLine("🦊 System tray initialisé !");
+            Console.WriteLine("✅ System tray initialisé !");
+        
+            // // Test des notifications après initialisation
+            // TestNotifications();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"🦊 Erreur initialisation system tray: {ex.Message}");
+            Console.WriteLine($"❌ Erreur initialisation system tray: {ex.Message}");
         }
     }
 
@@ -210,26 +230,72 @@ public class SystemTrayService : IDisposable
     /// <summary>
     /// Obtient l'icône de l'application
     /// </summary>
-    private static System.Drawing.Icon? GetApplicationIcon()
+    /// <summary>
+/// Obtient l'icône de l'application
+/// </summary>
+private static System.Drawing.Icon? GetApplicationIcon()
+{
+    try
     {
+        Console.WriteLine("🦊 Tentative de chargement de l'icône...");
+        
+        // Méthode 1 : Depuis les ressources embarquées
         try
         {
-            // Essayer de charger l'icône depuis les ressources
-            var iconPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Icons", "fox.ico");
-            if (System.IO.File.Exists(iconPath))
+            var iconUri = new Uri("pack://application:,,,/Assets/Icons/fox.ico");
+            var resourceStream = Application.GetResourceStream(iconUri);
+            if (resourceStream != null)
             {
-                return new System.Drawing.Icon(iconPath);
+                Console.WriteLine("✅ Icône chargée depuis les ressources embarquées");
+                return new System.Drawing.Icon(resourceStream.Stream);
             }
-
-            // Fallback vers l'icône par défaut de l'application
-            return System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"🦊 Erreur chargement icône: {ex.Message}");
-            return null;
+            Console.WriteLine($"⚠️ Échec ressources embarquées: {ex.Message}");
         }
+
+        // Méthode 2 : Depuis le dossier de l'application
+        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        var iconPaths = new[]
+        {
+            Path.Combine(baseDir, "Assets", "Icons", "fox.ico"),
+            Path.Combine(baseDir, "fox.ico"),
+            Path.Combine(baseDir, "Assets", "fox.ico")
+        };
+
+        foreach (var iconPath in iconPaths)
+        {
+            Console.WriteLine($"🔍 Recherche icône: {iconPath}");
+            if (File.Exists(iconPath))
+            {
+                Console.WriteLine($"✅ Icône trouvée: {iconPath}");
+                return new System.Drawing.Icon(iconPath);
+            }
+        }
+
+        // Méthode 3 : Icône de l'exécutable
+        var executablePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+        if (!string.IsNullOrEmpty(executablePath) && File.Exists(executablePath))
+        {
+            var extractedIcon = System.Drawing.Icon.ExtractAssociatedIcon(executablePath);
+            if (extractedIcon != null)
+            {
+                Console.WriteLine("✅ Icône extraite de l'exécutable");
+                return extractedIcon;
+            }
+        }
+
+        // Fallback : Icône système
+        Console.WriteLine("⚠️ Utilisation icône système par défaut");
+        return SystemIcons.Application;
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Erreur chargement icône: {ex.Message}");
+        return SystemIcons.Application;
+    }
+}
 
     /// <summary>
     /// Affiche la boîte de dialogue À propos
